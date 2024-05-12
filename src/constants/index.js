@@ -1,6 +1,11 @@
 // hashmap
 const constValTable = {
   R: 0.08413, //  (bar * mol) / (L * K)
+
+  // Redlich - Kwong Constants
+  omega: 0.08664,
+  psi: 0.42748,
+
   // Chemical Compounds (a and b constants)
   vanDerWaals: {
     aceticAcid: {
@@ -212,6 +217,9 @@ const constValTable = {
 /*-----------------------------------------CHEMICAL COMPOUNDS-------------------------------------------------*/
 // Constant Variables
 const R = constValTable.R;
+// Redlich - Kwong Constants
+const omega = constValTable.omega;
+const psi = constValTable.psi;
 
 // Van Der Waals Constant Variables (a and b)
 const aceticAcidA = constValTable.vanDerWaals.aceticAcid.a;
@@ -371,6 +379,10 @@ export const chemCompoundOps = [
 export {
   // Constant Variables
   R,
+
+  // Redlich - Kwong Constants
+  omega,
+  psi,
 
   // Van Der Waals Constant Variables (a and b)
   aceticAcidA,

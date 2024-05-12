@@ -4,6 +4,10 @@ import { Button, Input } from "../components/imports";
 import {
   // Constant Variables
   R,
+
+  // Redlich - Kwong Constants
+  omega,
+  psi,
   
   // Van Der Waals Constant Variables (a and b)
   aceticAcidA,
@@ -130,9 +134,10 @@ export default function Home() {
     (answer !== 0) && setAnswer(0);     // Reset the Answer
   }, [isSelectedEquationType, isSelectedFindDropdownVal]);
 
-  // Handling Find Dropdown Val Resetting
+  // Handling Find Dropdown Val & Chemical Compound Resetting
   useEffect(() => {
     isSelectedFindDropdownVal && (setFindDropdownVal(null)); 
+    isSelectedChemicalCompound && (setSelectedChemicalCompound(null)); 
   }, [isSelectedEquationType]);
 
   const getEquationTypeValue = selectedOption => {
@@ -462,223 +467,350 @@ export default function Home() {
         n = form.n.value;
         T = form.t.value;
         P = form.p.value;
-        answer = (n * R * T) / P;
+        // answer = (n * R * T) / P;
         setAnswer(answer);
         break;
       case "n":
         P = form.p.value;
         V = form.v.value;
         T = form.t.value;
-        answer = (P * V) / (R * T);
+        // answer = (P * V) / (R * T);
         setAnswer(answer);
         break;
       case "T":
         P = form.p.value;
         V = form.v.value;
         n = form.n.value;
-        answer = (P * V) / (n * R);
+        // answer = (P * V) / (n * R);
         setAnswer(answer);
         break;
       default:
         console.log("Invalid find option");
     }
   }
+
+  // get Redlich - Kwong
+  const getRedlichKwong = e => {
+    e.preventDefault();
+    const form = e.target;
+    const equationTypeVal = isSelectedEquationType.value;
+    const findDropdownVal = isSelectedFindDropdownVal.value;
+    const chemCompoundVal = isSelectedChemicalCompound.value;
+    const { Tc, Pc } = getChemicalCompoundVal(equationTypeVal,chemCompoundVal);   // constant Tc & Pc value based on chem compound selected by user
+
+    let n, T, P, V, Tr, aT, answer;
+    const b = (omega * ( R * Tc)) / Pc;   // constant b for redlich - kwong
+
+    switch (findDropdownVal) {
+      case "P":
+        n = form.n.value;
+        T = form.t.value;
+        V = form.v.value;
+        Tr = T / Tc;
+        aT = (psi * (Tr ** (-1/2)) * (R ** 2) * (Tc ** 2)) / Pc;
+
+        answer = ((n * R * T) / (V - b)) - (aT / (V * (V + b)));
+        setAnswer(answer);
+        break;
+      case "V":         // FIX
+        n = form.n.value;
+        T = form.t.value;
+        P = form.p.value;
+        Tr = T / Tc;
+
+        // answer = () - ();
+        setAnswer(answer);
+        break;
+      case "n":
+        P = form.p.value;
+        V = form.v.value;
+        T = form.t.value;
+        Tr = T / Tc;
+        aT = (psi * (Tr ** (-1/2)) * (R ** 2) * (Tc ** 2)) / Pc;
+
+        answer = ((P * (V - b)) / (R * T)) - ((aT * (V - b)) / ((R * T * V) * (V + b)));
+        setAnswer(answer);
+        break;
+      case "T":
+        P = form.p.value;
+        V = form.v.value;
+        n = form.n.value;
+        Tr = form.tr.value;
+        aT = (psi * (Tr ** (-1/2)) * (R ** 2) * (Tc ** 2)) / Pc;
+
+        answer = ((aT * (V - b)) / ((n * R * V) * (V + b))) - ((P * (V - b)) / (n * R));
+        setAnswer(answer);
+        break;
+      default:
+        console.log("Invalid find option");
+    }
+  }
+
+
   return (
-    <>
+    <div className="flex justify-center items-center h-screen">
       {/* flex justify-center items-center h-screen */}
-      <div className="flex px-52 pt-32 items-center justify-between">
-        <div className="">
-          <p>Equation Type: </p>
-          <Select
-            className=""
-            value={isSelectedEquationType}
-            onChange={getEquationTypeValue}
-            isSearchable={false}
-            options={equationType}
-            placeholder="Select Type"
-          />
-        </div>
+      <div className="flex flex-col bg-[#384e77] items-center justify-center px-32 py-32 h-[30rem] w-[30rem] md:h-[30rem] md:w-[35rem] lg:h-[30rem] lg:w-[45rem] rounded-md">
+        {/* FIX ALL DESIGN TOM! */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3">
+          
+          <div className="">
+            <p className="text-[#c9ee5a]">Equation Type: </p>
+            <Select
+              className=""
+              value={isSelectedEquationType}
+              onChange={getEquationTypeValue}
+              isSearchable={false}
+              options={equationType}
+              placeholder="Select Type"
+            />
+          </div>
 
-        {/* If user selected an equation type */}
-        {isSelectedEquationType && (
-          <>
-            <div className="">
-              <p>Find: </p>
-              <Select
-                className=""
-                value={isSelectedFindDropdownVal}
-                onChange={getFindDropdownVal}
-                isSearchable={false}
-                options={findOps}
-                placeholder="Find Unknown Value"
-              />
-            </div>
-
-            {/* Chemical Compounds Dropdown to only show if user selected either Van Der Waals or Redlich - Kwong in Equation Type */}
-            {(isSelectedEquationType.value === "vdw" ||
-              isSelectedEquationType.value === "rkw") && (
+          {/* If user selected an equation type */}
+          {isSelectedEquationType && (
+            <>
               <div className="">
-                <p>Chemical Compound: </p>
+                <p>Find: </p>
                 <Select
                   className=""
-                  value={isSelectedChemicalCompound}
-                  onChange={getChemicalCompound}
+                  value={isSelectedFindDropdownVal}
+                  onChange={getFindDropdownVal}
                   isSearchable={false}
-                  options={chemCompoundOps}
-                  placeholder="Select Chemical Compound"
+                  options={findOps}
+                  placeholder="Find Unknown Value"
                 />
               </div>
+
+              {/* Chemical Compounds Dropdown to only show if user selected either Van Der Waals or Redlich - Kwong in Equation Type */}
+              {(isSelectedEquationType.value === "vdw" ||
+                isSelectedEquationType.value === "rkw") && (
+                <div className="">
+                  <p>Chemical Compound: </p>
+                  <Select
+                    className=""
+                    value={isSelectedChemicalCompound}
+                    onChange={getChemicalCompound}
+                    isSearchable={false}
+                    options={chemCompoundOps}
+                    placeholder="Select Chemical Compound"
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+
+        {/* If user selected the Unit to Find */}
+        {isSelectedFindDropdownVal && (
+          <>
+            {/* Ideal Gas */}
+            {isSelectedEquationType.value === "ig" && (
+              <div className="flex">
+                {/* If P is missing */}
+                {isSelectedFindDropdownVal.value === "P" && (
+                  <div className="">
+                    <form onSubmit={getIdealGasVal}>
+                      <p className="italic">n</p>
+                      <Input name="n" />
+                      <p className="italic">T</p>
+                      <Input name="t" />
+                      <p className="italic">V</p>
+                      <Input name="v" />
+                      <Button />
+                    </form>
+                  </div>
+                )}
+
+                {/* If V is missing */}
+                {isSelectedFindDropdownVal.value === "V" && (
+                  <div className="">
+                    <form onSubmit={getIdealGasVal}>
+                      <p className="italic">n</p>
+                      <Input name="n" />
+                      <p className="italic">T</p>
+                      <Input name="t" />
+                      <p className="italic">P</p>
+                      <Input name="p" />
+                      <Button />
+                    </form>
+                  </div>
+                )}
+
+                {/* If n is missing */}
+                {isSelectedFindDropdownVal.value === "n" && (
+                  <div className="">
+                    <form onSubmit={getIdealGasVal}>
+                      <p className="italic">P</p>
+                      <Input name="p" />
+                      <p className="italic">V</p>
+                      <Input name="v" />
+                      <p className="italic">T</p>
+                      <Input name="t" />
+                      <Button />
+                    </form>
+                  </div>
+                )}
+
+                {/* If T is missing */}
+                {isSelectedFindDropdownVal.value === "T" && (
+                  <div className="">
+                    <form onSubmit={getIdealGasVal}>
+                      <p className="italic">P</p>
+                      <Input name="p" />
+                      <p className="italic">V</p>
+                      <Input name="v" />
+                      <p className="italic">n</p>
+                      <Input name="n" />
+                      <Button />
+                    </form>
+                  </div>
+                )}
+              </div>
             )}
+
+            {/* If user selected Chemical Compound, show vdw & rkw */}
+            {isSelectedChemicalCompound && (
+              <>
+                {/* Van Der Waals (a and b should be given by the user, R is constant)*/}
+                {isSelectedEquationType.value === "vdw" && (
+                  <div className="flex">
+                    {/* If P is missing */}
+                    {isSelectedFindDropdownVal.value === "P" && (
+                      <div className="">
+                        <form onSubmit={getVanDerWaals}>
+                          <p>n</p>
+                          <Input name="n" />
+                          <p>T</p>
+                          <Input name="t" />
+                          <p>V</p>
+                          <Input name="v" />
+                          <Button />
+                        </form>
+                      </div>
+                    )}
+      
+                    {/* If V is missing */}
+                    {isSelectedFindDropdownVal.value === "V" && (
+                      <div className="">
+                        <form onSubmit={getVanDerWaals}>
+                          <p>n</p>
+                          <Input name="n" />
+                          <p>T</p>
+                          <Input name="t" />
+                          <p>P</p>
+                          <Input name="p" />
+                          <Button />
+                        </form>
+                      </div>
+                    )}
+      
+                    {/* If n is missing */}
+                    {isSelectedFindDropdownVal.value === "n" && (
+                      <div className="">
+                        <form onSubmit={getVanDerWaals}>
+                          <p>P</p>
+                          <Input name="p" />
+                          <p>V</p>
+                          <Input name="v" />
+                          <p>T</p>
+                          <Input name="t" />
+                          <Button />
+                        </form>
+                      </div>
+                    )}
+      
+                    {/* If T is missing */}
+                    {isSelectedFindDropdownVal.value === "T" && (
+                      <div className="">
+                        <form onSubmit={getVanDerWaals}>
+                          <p>P</p>
+                          <Input name="p" />
+                          <p>V</p>
+                          <Input name="v" />
+                          <p>n</p>
+                          <Input name="n" />
+                          <Button />
+                        </form>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Redlich - Kwong (some comutation, see the vid)*/}
+                {isSelectedEquationType.value === "rkw" && (
+                  <div className="flex">
+                    {/* If P is missing */}
+                    {isSelectedFindDropdownVal.value === "P" && (
+                      <div className="">
+                        <form onSubmit={getRedlichKwong}>
+                          <p>n</p>
+                          <Input name="n" />
+                          <p>T</p>
+                          <Input name="t" />
+                          <p>V</p>
+                          <Input name="v" />
+                          <Button />
+                        </form>
+                      </div>
+                    )}
+      
+                    {/* If V is missing */}
+                    {isSelectedFindDropdownVal.value === "V" && (
+                      <div className="">
+                        <form onSubmit={getRedlichKwong}>
+                          <p>n</p>
+                          <Input name="n" />
+                          <p>T</p>
+                          <Input name="t" />
+                          <p>P</p>
+                          <Input name="p" />
+                          <Button />
+                        </form>
+                      </div>
+                    )}
+      
+                    {/* If n is missing */}
+                    {isSelectedFindDropdownVal.value === "n" && (
+                      <div className="">
+                        <form onSubmit={getRedlichKwong}>
+                          <p>P</p>
+                          <Input name="p" />
+                          <p>V</p>
+                          <Input name="v" />
+                          <p>T</p>
+                          <Input name="t" />
+                          <Button />
+                        </form>
+                      </div>
+                    )}
+      
+                    {/* If T is missing */}
+                    {isSelectedFindDropdownVal.value === "T" && (
+                      <div className="">
+                        <form onSubmit={getRedlichKwong}>
+                          <p>P</p>
+                          <Input name="p" />
+                          <p>V</p>
+                          <Input name="v" />
+                          <p>n</p>
+                          <Input name="n" />
+                          <p>Tr</p>
+                          <Input name="tr" />
+                          <Button />
+                        </form>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+
+            <p>Answer: {`${answer} ${unitTypes[isSelectedFindDropdownVal.value]}`}</p>
           </>
         )}
       </div>
 
-      {/* If user selected the Unit to Find */}
-      {isSelectedFindDropdownVal && (
-        <>
-          {/* Ideal Gas */}
-          {isSelectedEquationType.value === "ig" && (
-            <div className="flex">
-              {/* If P is missing */}
-              {isSelectedFindDropdownVal.value === "P" && (
-                <div className="">
-                  <form onSubmit={getIdealGasVal}>
-                    <p className="italic">n</p>
-                    <Input name="n" />
-                    <p className="italic">T</p>
-                    <Input name="t" />
-                    <p className="italic">V</p>
-                    <Input name="v" />
-                    <Button />
-                  </form>
-                </div>
-              )}
-
-              {/* If V is missing */}
-              {isSelectedFindDropdownVal.value === "V" && (
-                <div className="">
-                  <form onSubmit={getIdealGasVal}>
-                    <p className="italic">n</p>
-                    <Input name="n" />
-                    <p className="italic">T</p>
-                    <Input name="t" />
-                    <p className="italic">P</p>
-                    <Input name="p" />
-                    <Button />
-                  </form>
-                </div>
-              )}
-
-              {/* If n is missing */}
-              {isSelectedFindDropdownVal.value === "n" && (
-                <div className="">
-                  <form onSubmit={getIdealGasVal}>
-                    <p className="italic">P</p>
-                    <Input name="p" />
-                    <p className="italic">V</p>
-                    <Input name="v" />
-                    <p className="italic">T</p>
-                    <Input name="t" />
-                    <Button />
-                  </form>
-                </div>
-              )}
-
-              {/* If T is missing */}
-              {isSelectedFindDropdownVal.value === "T" && (
-                <div className="">
-                  <form onSubmit={getIdealGasVal}>
-                    <p className="italic">P</p>
-                    <Input name="p" />
-                    <p className="italic">V</p>
-                    <Input name="v" />
-                    <p className="italic">n</p>
-                    <Input name="n" />
-                    <Button />
-                  </form>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* If user selected Chemical Compound, show vdw & rkw */}
-          {isSelectedChemicalCompound && (
-            <>
-              {/* Van Der Waals (a and b should be given by the user, R is constant)*/}
-              {isSelectedEquationType.value === "vdw" && (
-                <div className="flex">
-                  {/* If P is missing */}
-                  {isSelectedFindDropdownVal.value === "P" && (
-                    <div className="">
-                      <form onSubmit={getVanDerWaals}>
-                        <p>n</p>
-                        <Input name="n" />
-                        <p>T</p>
-                        <Input name="t" />
-                        <p>V</p>
-                        <Input name="v" />
-                        <Button />
-                      </form>
-                    </div>
-                  )}
-    
-                  {/* If V is missing */}
-                  {isSelectedFindDropdownVal.value === "V" && (
-                    <div className="">
-                      <form onSubmit={getVanDerWaals}>
-                        <p>n</p>
-                        <Input name="n" />
-                        <p>T</p>
-                        <Input name="t" />
-                        <p>P</p>
-                        <Input name="p" />
-                        <Button />
-                      </form>
-                    </div>
-                  )}
-    
-                  {/* If n is missing */}
-                  {isSelectedFindDropdownVal.value === "n" && (
-                    <div className="">
-                      <form onSubmit={getVanDerWaals}>
-                        <p>P</p>
-                        <Input name="p" />
-                        <p>V</p>
-                        <Input name="v" />
-                        <p>T</p>
-                        <Input name="t" />
-                        <Button />
-                      </form>
-                    </div>
-                  )}
-    
-                  {/* If T is missing */}
-                  {isSelectedFindDropdownVal.value === "T" && (
-                    <div className="">
-                      <form onSubmit={getVanDerWaals}>
-                        <p>P</p>
-                        <Input name="p" />
-                        <p>V</p>
-                        <Input name="v" />
-                        <p>n</p>
-                        <Input name="n" />
-                        <Button />
-                      </form>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Redlich - Kwong (some comutation, see the vid)*/}
-              {isSelectedEquationType.value === "rkw" && (
-                <></>
-              )}
-            </>
-          )}
-
-          <p>Answer: {`${answer} ${unitTypes[isSelectedFindDropdownVal.value]}`}</p>
-        </>
-      )}
-    </>
+    </div>
   );
 }
