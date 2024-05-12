@@ -408,36 +408,40 @@ export default function Home() {
     const form = e.target;
     const findDropdownVal = isSelectedFindDropdownVal.value;
 
-    let n, T, P, V, answer;
+    let n = 0;
+    let T = 0; 
+    let P = 0;
+    let V = 0;
+    let answer = 0;
 
     switch (findDropdownVal) {
       case "P":
-        n = form.n.value;
-        T = form.t.value;
-        V = form.v.value;
+        n = parseFloat(form.n.value);
+        T = parseFloat(form.t.value);
+        V = parseFloat(form.v.value);
         answer = (n * R * T) / V;
-        setAnswer(answer);
+        setAnswer(answer.toFixed(10));
         break;
       case "V":
-        n = form.n.value;
-        T = form.t.value;
-        P = form.p.value;
+        n = parseFloat(form.n.value);
+        T = parseFloat(form.t.value);
+        P = parseFloat(form.p.value);
         answer = (n * R * T) / P;
-        setAnswer(answer);
+        setAnswer(answer.toFixed(10));
         break;
       case "n":
-        P = form.p.value;
-        V = form.v.value;
-        T = form.t.value;
+        P = parseFloat(form.p.value);
+        V = parseFloat(form.v.value);
+        T = parseFloat(form.t.value);
         answer = (P * V) / (R * T);
-        setAnswer(answer);
+        setAnswer(answer.toFixed(10));
         break;
       case "T":
-        P = form.p.value;
-        V = form.v.value;
-        n = form.n.value;
+        P = parseFloat(form.p.value);
+        V = parseFloat(form.v.value);
+        n = parseFloat(form.n.value);
         answer = (P * V) / (n * R);
-        setAnswer(answer);
+        setAnswer(answer.toFixed(10));
         break;
       default:
         console.log("Invalid find option");
@@ -453,36 +457,43 @@ export default function Home() {
     const chemCompoundVal = isSelectedChemicalCompound.value;
     const { a, b } = getChemicalCompoundVal(equationTypeVal,chemCompoundVal);   // constant a & b value based on chem compound selected by user
 
-    let n, T, P, V, answer;
+    let n = 0;
+    let T = 0;
+    let P = 0;
+    let V = 0;
+    let answer = 0;
 
     switch (findDropdownVal) {
       case "P":
-        n = form.n.value;
-        T = form.t.value;
-        V = form.v.value;
-        answer = ((n * R * T) / (V - (n * b))) - ((a * (n ** 2)) / (V ** 2));
-        setAnswer(answer);
+        n = parseFloat(form.n.value);
+        T = parseFloat(form.t.value);
+        V = parseFloat(form.v.value);
+
+        const firstPart = ((n * R * T) / (V - (n * b)));
+        const secondPart = ((a * (n ** 2)) / (V ** 2));
+        answer = firstPart - secondPart;
+        setAnswer(answer.toFixed(10));
         break;
       case "V":
-        n = form.n.value;
-        T = form.t.value;
-        P = form.p.value;
+        n = parseFloat(form.n.value);
+        T = parseFloat(form.t.value);
+        P = parseFloat(form.p.value);
         // answer = (n * R * T) / P;
-        setAnswer(answer);
+        setAnswer(answer.toFixed(10));
         break;
       case "n":
-        P = form.p.value;
-        V = form.v.value;
-        T = form.t.value;
+        P = parseFloat(form.p.value);
+        V = parseFloat(form.v.value);
+        T = parseFloat(form.t.value);
         // answer = (P * V) / (R * T);
-        setAnswer(answer);
+        setAnswer(answer.toFixed(10));
         break;
       case "T":
-        P = form.p.value;
-        V = form.v.value;
-        n = form.n.value;
+        P = parseFloat(form.p.value);
+        V = parseFloat(form.v.value);
+        n = parseFloat(form.n.value);
         // answer = (P * V) / (n * R);
-        setAnswer(answer);
+        setAnswer(answer.toFixed(10));
         break;
       default:
         console.log("Invalid find option");
@@ -498,33 +509,41 @@ export default function Home() {
     const chemCompoundVal = isSelectedChemicalCompound.value;
     const { Tc, Pc } = getChemicalCompoundVal(equationTypeVal,chemCompoundVal);   // constant Tc & Pc value based on chem compound selected by user
 
-    let n, T, P, V, Tr, aT, answer;
+    let n = 0;
+    let T = 0;
+    let P = 0;
+    let V = 0;
+    let Tr = 0;
+    let aT = 0;
+    let answer = 0;
     const b = (omega * ( R * Tc)) / Pc;   // constant b for redlich - kwong
 
     switch (findDropdownVal) {
       case "P":
-        n = form.n.value;
-        T = form.t.value;
-        V = form.v.value;
+        n = parseFloat(form.n.value);
+        T = parseFloat(form.t.value);
+        V = parseFloat(form.v.value);
         Tr = T / Tc;
         aT = (psi * (Tr ** (-1/2)) * (R ** 2) * (Tc ** 2)) / Pc;
 
-        answer = ((n * R * T) / (V - b)) - (aT / (V * (V + b)));
+        const firstPart = (n * R * T) / (V - b);
+        const secondPart = ((aT) / (V * (V + b)));
+        answer = firstPart.toFixed(10) - secondPart.toFixed(10);
         setAnswer(answer);
         break;
       case "V":         // FIX
-        n = form.n.value;
-        T = form.t.value;
-        P = form.p.value;
+        n = parseFloat(form.n.value);
+        T = parseFloat(form.t.value);
+        P = parseFloat(form.p.value);
         Tr = T / Tc;
 
         // answer = () - ();
         setAnswer(answer);
         break;
       case "n":
-        P = form.p.value;
-        V = form.v.value;
-        T = form.t.value;
+        P = parseFloat(form.p.value);
+        V = parseFloat(form.v.value);
+        T = parseFloat(form.t.value);
         Tr = T / Tc;
         aT = (psi * (Tr ** (-1/2)) * (R ** 2) * (Tc ** 2)) / Pc;
 
@@ -532,10 +551,10 @@ export default function Home() {
         setAnswer(answer);
         break;
       case "T":
-        P = form.p.value;
-        V = form.v.value;
-        n = form.n.value;
-        Tr = form.tr.value;
+        P = parseFloat(form.p.value);
+        V = parseFloat(form.v.value);
+        n = parseFloat(form.n.value);
+        Tr = parseFloat(form.tr.value);
         aT = (psi * (Tr ** (-1/2)) * (R ** 2) * (Tc ** 2)) / Pc;
 
         answer = ((aT * (V - b)) / ((n * R * V) * (V + b))) - ((P * (V - b)) / (n * R));

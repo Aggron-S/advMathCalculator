@@ -1,6 +1,6 @@
 // hashmap
 const constValTable = {
-  R: 0.08413, //  (bar * mol) / (L * K)
+  R: 0.08314, //  (bar * mol) / (L * K)
 
   // Redlich - Kwong Constants
   omega: 0.08664,
