@@ -33,6 +33,11 @@ body {
 } */
 
 body {
-  font-family: serif; /* Change to the desired font family */
-  background-color: #00c1c1;
+  /* font-family: serif; */
+  letter-spacing: 0.4px;
+  background-color: #73c5e0;
+}
+
+p {
+  color: #fff;
 }
