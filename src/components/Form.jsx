@@ -22,8 +22,12 @@ const Form = ({
         } md:py-10 gap-y-2`}>
         {formElements.map((formElement, index) => (
           <div key={index}>
-            <p className="font-semibold italic">{`${formElement.label}`}
-              <span className="text-[#53e2ff]">{` (${formElement.unitType})`}</span>
+            <p className="font-semibold italic">
+              {`${formElement.label}`}
+              {/* Show unit types (except in Tr) */}
+              {formElement.label !== "Tr" && (
+                <span className="text-[#53e2ff]">{` (${formElement.unitType})`}</span>
+              )}
             </p>
             <Input name={formElement.name} />
           </div>
@@ -32,7 +36,10 @@ const Form = ({
       {hasAnswer && (
         <div className="flex justify-center items-center">
           <p className="text-lg font-bold pt-4 md:pt-0 md:py-5">
-            Answer: <span className="text-[#53e2ff]">{`${answer} ${unitTypes[isSelectedFindDropdownVal.value]}`}</span>
+            Answer:{" "}
+            <span className="text-[#53e2ff]">{`${answer} ${
+              unitTypes[isSelectedFindDropdownVal.value]
+            }`}</span>
           </p>
         </div>
       )}
