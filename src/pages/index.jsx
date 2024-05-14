@@ -111,7 +111,9 @@ import {
   waterPc,
   // react-select component options
   equationType,
-  findOps,
+  idealGasOps,
+  vanDerWaalsOps,
+  redlichKwongOps,
   chemCompoundOps,
   // Answer Unit Types
   unitTypes
@@ -471,26 +473,31 @@ export default function Home() {
         formatAnswer = formatNumber(parseFloat(answer.toFixed(10)));
         setAnswer(formatAnswer);
         break;
-      case "V":
-        n = parseFloat(form.n.value);
-        T = parseFloat(form.t.value);
-        P = parseFloat(form.p.value);
-        // answer = (n * R * T) / P;
-        setAnswer(answer.toFixed(10));
-        break;
-      case "n":
-        P = parseFloat(form.p.value);
-        V = parseFloat(form.v.value);
-        T = parseFloat(form.t.value);
-        // answer = (P * V) / (R * T);
-        setAnswer(answer.toFixed(10));
-        break;
+      // case "V":
+      //   n = parseFloat(form.n.value);
+      //   T = parseFloat(form.t.value);
+      //   P = parseFloat(form.p.value);
+      //   // answer = (n * R * T) / P;
+      //   setAnswer(answer.toFixed(10));
+      //   break;
+      // case "n":
+      //   P = parseFloat(form.p.value);
+      //   V = parseFloat(form.v.value);
+      //   T = parseFloat(form.t.value);
+      //   // answer = (P * V) / (R * T);
+      //   setAnswer(answer.toFixed(10));
+      //   break;
       case "T":
         P = parseFloat(form.p.value);
         V = parseFloat(form.v.value);
         n = parseFloat(form.n.value);
-        // answer = (P * V) / (n * R);
-        setAnswer(answer.toFixed(10));
+
+        firstPart = (((a * n * V) - ((a * (n ** 2)) * b)) / ((V ** 2) * R));
+        secondPart = ((P * (V - (n * b))) / (n * R));
+        answer = firstPart + secondPart;
+        
+        formatAnswer = formatNumber(parseFloat(answer.toFixed(10)));
+        setAnswer(formatAnswer);
         break;
       default:
         console.log("Invalid find option");
@@ -536,15 +543,15 @@ export default function Home() {
         setAnswer(formatAnswer);
         
         break;
-      case "V":
-        n = parseFloat(form.n.value);
-        T = parseFloat(form.t.value);
-        P = parseFloat(form.p.value);
-        Tr = T / Tc;
+      // case "V":
+      //   n = parseFloat(form.n.value);
+      //   T = parseFloat(form.t.value);
+      //   P = parseFloat(form.p.value);
+      //   Tr = T / Tc;
 
-        // answer = () - ();
-        setAnswer(answer);
-        break;
+      //   // answer = () - ();
+      //   setAnswer(answer);
+      //   break;
       case "n":
         P = parseFloat(form.p.value);
         V = parseFloat(form.v.value);
@@ -607,7 +614,13 @@ export default function Home() {
                   value={isSelectedFindDropdownVal}
                   onChange={getFindDropdownVal}
                   isSearchable={false}
-                  options={findOps}
+                  options={
+                    isSelectedEquationType.value === "ig"
+                      ? idealGasOps
+                      : isSelectedEquationType.value === "vdw"
+                      ? vanDerWaalsOps
+                      : isSelectedEquationType.value === "rkw" && redlichKwongOps
+                  }
                   placeholder="Find Unknown"
                 />
               </div>
@@ -647,9 +660,9 @@ export default function Home() {
                     unitTypes={unitTypes}
                     isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                     formElements={[
-                      { label: 'n', name: 'n' },
-                      { label: 'T', name: 't' },
-                      { label: 'V', name: 'v' }
+                      { label: 'n', name: 'n', unitType: 'mol' },
+                      { label: 'T', name: 't', unitType: 'K' },
+                      { label: 'V', name: 'v', unitType: 'L' }
                     ]}
                   />
                 )}
@@ -663,9 +676,9 @@ export default function Home() {
                     unitTypes={unitTypes}
                     isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                     formElements={[
-                      { label: 'n', name: 'n' },
-                      { label: 'T', name: 't' },
-                      { label: 'P', name: 'p' }
+                      { label: 'n', name: 'n', unitType: 'mol' },
+                      { label: 'T', name: 't', unitType: 'K' },
+                      { label: 'P', name: 'p', unitType: 'bar' }
                     ]}
                   />
                 )}
@@ -679,9 +692,9 @@ export default function Home() {
                     unitTypes={unitTypes}
                     isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                     formElements={[
-                      { label: 'P', name: 'p' },
-                      { label: 'V', name: 'v' },
-                      { label: 'T', name: 't' }
+                      { label: 'P', name: 'p', unitType: 'bar' },
+                      { label: 'V', name: 'v', unitType: 'L' },
+                      { label: 'T', name: 't', unitType: 'K' }
                     ]}
                   />
                 )}
@@ -695,9 +708,9 @@ export default function Home() {
                     unitTypes={unitTypes}
                     isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                     formElements={[
-                      { label: 'P', name: 'p' },
-                      { label: 'V', name: 'v' },
-                      { label: 'n', name: 'n' }
+                      { label: 'P', name: 'p', unitType: 'bar' },
+                      { label: 'V', name: 'v', unitType: 'L' },
+                      { label: 'n', name: 'n', unitType: 'mol' }
                     ]}
                   />
                 )}
@@ -719,9 +732,9 @@ export default function Home() {
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                         formElements={[
-                          { label: 'n', name: 'n' },
-                          { label: 'T', name: 't' },
-                          { label: 'V', name: 'v' }
+                          { label: 'n', name: 'n', unitType: 'mol' },
+                          { label: 'T', name: 't', unitType: 'K' },
+                          { label: 'V', name: 'v', unitType: 'L' }
                         ]}
                       />
                     )}
@@ -735,9 +748,9 @@ export default function Home() {
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                         formElements={[
-                          { label: 'n', name: 'n' },
-                          { label: 'T', name: 't' },
-                          { label: 'P', name: 'p' }
+                          { label: 'n', name: 'n', unitType: 'mol' },
+                          { label: 'T', name: 't', unitType: 'K' },
+                          { label: 'P', name: 'p', unitType: 'bar' }
                         ]}
                       />
                     )}
@@ -751,9 +764,9 @@ export default function Home() {
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                         formElements={[
-                          { label: 'P', name: 'p' },
-                          { label: 'V', name: 'v' },
-                          { label: 'T', name: 't' }
+                          { label: 'P', name: 'p', unitType: 'bar' },
+                          { label: 'V', name: 'v', unitType: 'L' },
+                          { label: 'T', name: 't', unitType: 'K' }
                         ]}
                       />
                     )}
@@ -767,9 +780,9 @@ export default function Home() {
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                         formElements={[
-                          { label: 'P', name: 'p' },
-                          { label: 'V', name: 'v' },
-                          { label: 'n', name: 'n' }
+                          { label: 'P', name: 'p', unitType: 'bar' },
+                          { label: 'V', name: 'v', unitType: 'L' },
+                          { label: 'n', name: 'n', unitType: 'mol' }
                         ]}
                       />
                     )}
@@ -788,9 +801,9 @@ export default function Home() {
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                         formElements={[
-                          { label: 'n', name: 'n' },
-                          { label: 'T', name: 't' },
-                          { label: 'V', name: 'v' }
+                          { label: 'n', name: 'n', unitType: 'mol' },
+                          { label: 'T', name: 't', unitType: 'K' },
+                          { label: 'V', name: 'v', unitType: 'L' }
                         ]}
                       />
                       
@@ -805,9 +818,9 @@ export default function Home() {
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                         formElements={[
-                          { label: 'n', name: 'n' },
-                          { label: 'T', name: 't' },
-                          { label: 'P', name: 'p' }
+                          { label: 'n', name: 'n', unitType: 'mol' },
+                          { label: 'T', name: 't', unitType: 'K' },
+                          { label: 'P', name: 'p', unitType: 'bar' }
                         ]}
                       />
                     )}
@@ -821,9 +834,9 @@ export default function Home() {
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                         formElements={[
-                          { label: 'P', name: 'p' },
-                          { label: 'V', name: 'v' },
-                          { label: 'T', name: 't' }
+                          { label: 'P', name: 'p', unitType: 'bar' },
+                          { label: 'V', name: 'v', unitType: 'L' },
+                          { label: 'T', name: 't', unitType: 'K' }
                         ]}
                       />
                     )}
@@ -838,10 +851,10 @@ export default function Home() {
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                         isSelectedEquationType={isSelectedEquationType}       // only T in Redlich - Kwong has this (for dealing with 2 & 4 cols in diff screen sizes)
                         formElements={[
-                          { label: 'P', name: 'p' },
-                          { label: 'V', name: 'v' },
-                          { label: 'n', name: 'n' },
-                          { label: 'Tr', name: 'tr' }
+                          { label: 'P', name: 'p', unitType: 'bar' },
+                          { label: 'V', name: 'v', unitType: 'L' },
+                          { label: 'n', name: 'n', unitType: 'mol' },
+                          { label: 'Tr', name: 'tr', unitType: '' }
                         ]}
                       />
                     )}

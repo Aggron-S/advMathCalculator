@@ -340,13 +340,27 @@ export const equationType = [
   { value: "rkw", label: "Redlich - Kwong" },
 ];
 
-// Find Options
-export const findOps = [
+// Ideal Gas Options
+export const idealGasOps = [
   { value: "P", label: "Pressure (P)" },
   { value: "V", label: "Volume (V)" },
   { value: "n", label: "mole (n)" },
   { value: "T", label: "Temperature (T)" },
 ];
+
+// Van Der Waals Options
+export const vanDerWaalsOps = [
+  { value: "P", label: "Pressure (P)" },
+  { value: "T", label: "Temperature (T)" },
+];
+
+// Redlich - Kwong Options
+export const redlichKwongOps = [
+  { value: "P", label: "Pressure (P)" },
+  { value: "n", label: "mole (n)" },
+  { value: "T", label: "Temperature (T)" },
+];
+
 // Chemical Compound Options
 export const chemCompoundOps = [
   { value: "aceticAcid", label: "Acetic acid (CH\u2083COOH)" },

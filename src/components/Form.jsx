@@ -22,7 +22,9 @@ const Form = ({
         } md:py-10 gap-y-2`}>
         {formElements.map((formElement, index) => (
           <div key={index}>
-            <p className="font-semibold italic">{formElement.label}</p>
+            <p className="font-semibold italic">{`${formElement.label}`}
+              <span className="text-[#53e2ff]">{` (${formElement.unitType})`}</span>
+            </p>
             <Input name={formElement.name} />
           </div>
         ))}
