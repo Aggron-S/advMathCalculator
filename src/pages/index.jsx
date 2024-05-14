@@ -561,7 +561,7 @@ export default function Home() {
 
         firstPart = ((P * (V - b)) / (R * T));
         secondPart = ((aT * (V - b)) / ((R * T * V) * (V + b)));
-        answer = firstPart - secondPart;
+        answer = firstPart + secondPart;
         
         formatAnswer = formatNumber(parseFloat(answer.toFixed(10)));
         setAnswer(formatAnswer);
@@ -575,7 +575,7 @@ export default function Home() {
 
         firstPart = ((aT * (V - b)) / ((n * R * V) * (V + b)));
         secondPart = ((P * (V - b)) / (n * R));
-        answer = firstPart - secondPart;
+        answer = firstPart + secondPart;
         
         formatAnswer = formatNumber(parseFloat(answer.toFixed(10)));
         setAnswer(formatAnswer);
