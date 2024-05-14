@@ -587,10 +587,11 @@ export default function Home() {
 
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      {/* flex justify-center items-center h-screen */}
-      <div className=" bg-[#6f5bb1]  px-8 rounded-md h-[33rem] w-[25rem] sm:w-[37rem] md:h-[30rem] md:w-[44rem] lg:w-[55rem]">
-        <p className="flex justify-center text-xl font-bold py-6">Advance Math Calculator</p>
+    <div className="flex justify-center items-center min-h-screen">
+      {/* min-h-screen */}
+      {/*  bg-[#6f5bb1]  px-8 rounded-md h-[33rem] w-[25rem] sm:w-[37rem] md:h-[30rem] md:w-[44rem] lg:w-[55rem] */}
+      <div className="bg-[#6f5bb1] px-8 rounded-md w-full max-w-[20rem] sm:max-w-[37rem] md:max-w-[47rem]">
+        <p className="flex justify-center text-l sm:text-xl font-bold py-6">Advance Math Calculator</p>
         <div className={`grid grid-cols-1 ${isSelectedEquationType && ((isSelectedEquationType.value === "ig") ? 'md:grid-cols-2' : 'md:grid-cols-3')} gap-x-8 pb-5`}>
           <div>
             <p className="font-bold">Equation Type: </p>
