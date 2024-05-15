@@ -5,8 +5,8 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>AdvMathCalculator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>REAL AND IDEAL GAS CALCULATOR</title>
       </Head>
       <Component {...pageProps} />
     </>

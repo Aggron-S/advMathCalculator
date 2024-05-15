@@ -130,7 +130,7 @@ export default function Home() {
   useEffect(() => {
     (answer !== 0) && setAnswer(0);     // Reset the Answer
     (hasAnswer === true) && setHasAnswer(false);
-  }, [isSelectedEquationType, isSelectedFindDropdownVal]);
+  }, [isSelectedEquationType, isSelectedFindDropdownVal, isSelectedChemicalCompound]);
 
   // Handling Find Dropdown Val & Chemical Compound Resetting
   useEffect(() => {
@@ -586,15 +586,49 @@ export default function Home() {
   }
 
 
+  // Custom react-select styles object
+  const customStyles = {
+    control: currentStyles => ({
+      ...currentStyles,
+      borderRadius: '0px', // Remove rounded corners
+      borderColor: '#424242',
+      boxShadow: 'none',
+      '&:hover': {
+        borderColor: '#424242',
+      },
+    }),
+    menu: currentStyles => ({
+      ...currentStyles,
+      borderRadius: '0px',    // Remove rounded corners in menu options
+      // height: '165px',     // Set the maximum height of the dropdown menu
+      // overflowY: 'auto',      // Enable vertical scrolling if the options exceed maxHeight
+    }),
+    dropdownIndicator: currentStyles => ({
+      ...currentStyles,
+      color: '#ac3737', // Change the color of the arrow button
+    }),
+    singleValue: currentStyles => ({
+      ...currentStyles,
+      color: '#ac3737', // Change the text color of the selected value
+    }),
+    option: (currentStyles, state) => ({
+      ...currentStyles,
+      color: '#ac3737',   // Change the text color of the options
+      backgroundColor: state.isSelected ? '#ff914d' : '#fff',
+      '&:hover': {
+        backgroundColor: state.isSelected ? '#ff914d' : '#e0e0e0',
+        color: state.isSelected ? '#ffffff' : '#ac3737',
+      },
+    }),
+  };
+
   return (
-    <div className="flex justify-center items-center h-[90vh]">
-      {/*  bg-[#6f5bb1]  px-8 rounded-md h-[33rem] w-[25rem] sm:w-[37rem] md:h-[30rem] md:w-[44rem] lg:w-[55rem] */}
-      {/*   */}
-      <div className="bg-[#6f5bb1] px-8 rounded-md w-full max-w-[20rem] sm:max-w-[37rem] md:max-w-[47rem]">
-        <p className="flex justify-center text-l sm:text-xl font-bold py-6">Advance Math Calculator</p>
-        <div className={`grid grid-cols-1 ${isSelectedEquationType && ((isSelectedEquationType.value === "ig") ? 'md:grid-cols-2' : 'md:grid-cols-3')} gap-x-8 pb-5`}>
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="bg-[#424242] px-8 rounded-md w-full max-w-[22rem] sm:max-w-[37rem] md:max-w-[50rem] lg:max-w-[60rem]">
+        <p className="flex justify-center text-[#ffbd59] text-[16.5px] sm:text-3xl font-bold py-6">REAL AND IDEAL GAS CALCULATOR</p>
+        <div className={`grid grid-cols-1 ${isSelectedEquationType && ((isSelectedEquationType.value === "ig") ? 'md:grid-cols-2' : 'md:grid-cols-3')} gap-x-8 pb-8`}>
           <div>
-            <p className="font-bold">Equation Type: </p>
+            <p className="text-[#ffbd59] text-[15px] sm:text-base">Equation Type: </p>
             <Select
               className=""
               value={isSelectedEquationType}
@@ -602,6 +636,7 @@ export default function Home() {
               isSearchable={false}
               options={equationType}
               placeholder="Select Type"
+              styles={customStyles}
             />
           </div>
 
@@ -609,7 +644,7 @@ export default function Home() {
           {isSelectedEquationType && (
             <>
               <div>
-                <p className="font-bold">Find: </p>
+                <p className="text-[#ffbd59] text-[15px] sm:text-base">Find: </p>
                 <Select
                   className=""
                   value={isSelectedFindDropdownVal}
@@ -623,6 +658,7 @@ export default function Home() {
                       : isSelectedEquationType.value === "rkw" && redlichKwongOps
                   }
                   placeholder="Find Unknown"
+                  styles={customStyles}
                 />
               </div>
 
@@ -630,7 +666,7 @@ export default function Home() {
               {(isSelectedEquationType.value === "vdw" ||
                 isSelectedEquationType.value === "rkw") && (
                 <div>
-                  <p className="font-bold">Chemical Compound: </p>
+                  <p className="text-[#ffbd59] text-[15px] sm:text-base">Chemical Compound: </p>
                   <Select
                     className=""
                     value={isSelectedChemicalCompound}
@@ -638,6 +674,7 @@ export default function Home() {
                     isSearchable={false}
                     options={chemCompoundOps}
                     placeholder="Select Compound"
+                    styles={customStyles}
                   />
                 </div>
               )}
@@ -651,7 +688,7 @@ export default function Home() {
           <>
             {/* Ideal Gas */}
             {isSelectedEquationType.value === "ig" && (
-              <div className="flex justify-center items-center">
+              <>
                 {/* If P is missing */}
                 {isSelectedFindDropdownVal.value === "P" && (
                   <Form 
@@ -715,7 +752,7 @@ export default function Home() {
                     ]}
                   />
                 )}
-              </div>
+              </>
             )}
 
             {/* If user selected Chemical Compound, show vdw & rkw */}
@@ -723,7 +760,7 @@ export default function Home() {
               <>
                 {/* Van Der Waals (a and b should be given by the user, R is constant)*/}
                 {isSelectedEquationType.value === "vdw" && (
-                  <div className="flex justify-center items-center">
+                  <>
                     {/* If P is missing */}
                     {isSelectedFindDropdownVal.value === "P" && (
                       <Form 
@@ -732,6 +769,7 @@ export default function Home() {
                         answer={answer}
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
+                        isSelectedChemicalCompound={isSelectedChemicalCompound}
                         formElements={[
                           { label: 'n', name: 'n', unitType: 'mol' },
                           { label: 'T', name: 't', unitType: 'K' },
@@ -748,6 +786,7 @@ export default function Home() {
                         answer={answer}
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
+                        isSelectedChemicalCompound={isSelectedChemicalCompound}
                         formElements={[
                           { label: 'n', name: 'n', unitType: 'mol' },
                           { label: 'T', name: 't', unitType: 'K' },
@@ -764,6 +803,7 @@ export default function Home() {
                         answer={answer}
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
+                        isSelectedChemicalCompound={isSelectedChemicalCompound}
                         formElements={[
                           { label: 'P', name: 'p', unitType: 'bar' },
                           { label: 'V', name: 'v', unitType: 'L' },
@@ -780,6 +820,7 @@ export default function Home() {
                         answer={answer}
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
+                        isSelectedChemicalCompound={isSelectedChemicalCompound}
                         formElements={[
                           { label: 'P', name: 'p', unitType: 'bar' },
                           { label: 'V', name: 'v', unitType: 'L' },
@@ -787,12 +828,12 @@ export default function Home() {
                         ]}
                       />
                     )}
-                  </div>
+                  </>
                 )}
 
                 {/* Redlich - Kwong (some comutation, see the vid)*/}
                 {isSelectedEquationType.value === "rkw" && (
-                  <div className="flex justify-center items-center">
+                  <>
                     {/* If P is missing */}
                     {isSelectedFindDropdownVal.value === "P" && (
                       <Form 
@@ -801,6 +842,7 @@ export default function Home() {
                         answer={answer}
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
+                        isSelectedChemicalCompound={isSelectedChemicalCompound}
                         formElements={[
                           { label: 'n', name: 'n', unitType: 'mol' },
                           { label: 'T', name: 't', unitType: 'K' },
@@ -818,6 +860,7 @@ export default function Home() {
                         answer={answer}
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
+                        isSelectedChemicalCompound={isSelectedChemicalCompound}
                         formElements={[
                           { label: 'n', name: 'n', unitType: 'mol' },
                           { label: 'T', name: 't', unitType: 'K' },
@@ -834,6 +877,7 @@ export default function Home() {
                         answer={answer}
                         unitTypes={unitTypes}
                         isSelectedFindDropdownVal={isSelectedFindDropdownVal}
+                        isSelectedChemicalCompound={isSelectedChemicalCompound}
                         formElements={[
                           { label: 'P', name: 'p', unitType: 'bar' },
                           { label: 'V', name: 'v', unitType: 'L' },
@@ -849,8 +893,9 @@ export default function Home() {
                         hasAnswer={hasAnswer}
                         answer={answer}
                         unitTypes={unitTypes}
-                        isSelectedFindDropdownVal={isSelectedFindDropdownVal}
                         isSelectedEquationType={isSelectedEquationType}       // only T in Redlich - Kwong has this (for dealing with 2 & 4 cols in diff screen sizes)
+                        isSelectedFindDropdownVal={isSelectedFindDropdownVal}
+                        isSelectedChemicalCompound={isSelectedChemicalCompound}
                         formElements={[
                           { label: 'P', name: 'p', unitType: 'bar' },
                           { label: 'V', name: 'v', unitType: 'L' },
@@ -859,7 +904,7 @@ export default function Home() {
                         ]}
                       />
                     )}
-                  </div>
+                  </>
                 )}
               </>
             )}
